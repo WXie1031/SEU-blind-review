@@ -1,0 +1,78 @@
+{
+  "stateFile": "./data/state.json",
+  "schedule": {
+    "timezone": "Asia/Shanghai",
+    "times": [
+      "12:00",
+      "18:00"
+    ],
+    "pollIntervalSeconds": 20
+  },
+  "logic": {
+    "notifyEmptyResult": true,
+    "notifyEmptyEveryTime": true,
+    "notifyOnlyWhenResultExists": false,
+    "dedupeResultNotifications": true,
+    "notifyErrors": false
+  },
+  "auth": {
+    "mode": "seu-account",
+    "baseUrl": "https://auth.seu.edu.cn/auth",
+    "serviceUrl": "http://ehall.seu.edu.cn/gsapp/sys/wddbsqappseu/modules/xsbdjcsq/lwssjgcx.do",
+    "username": "your-seu-username",
+    "password": "your-seu-password",
+    "stage2Code": "",
+    "autoSendStage2Code": true,
+    "rememberMe": false,
+    "fingerprint": "catchScore-monitor"
+  },
+  "poller": {
+    "targetUrl": "https://ehall.seu.edu.cn/gsapp/sys/wddbsqappseu/modules/xsbdjcsq/lwssjgcx.do",
+    "method": "POST",
+    "timeoutMs": 30000,
+    "headers": {
+      "Accept": "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+      "Origin": "https://ehall.seu.edu.cn",
+      "Referer": "https://ehall.seu.edu.cn/gsapp/sys/wddbsqappseu/*default/index.do",
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+      "X-Requested-With": "XMLHttpRequest"
+    },
+    "bodyType": "json",
+    "body": {}
+  },
+  "web": {
+    "host": "127.0.0.1",
+    "port": 3050,
+    "sessionCookieName": "catchscore_session",
+    "historyLimit": 120,
+    "pendingLoginTtlSeconds": 300,
+    "refreshIntervalSeconds": 30,
+    "stateFile": "./data/web-state.json",
+    "secretFile": "./data/web-secret.json"
+  },
+  "notifications": [
+    {
+      "type": "console"
+    },
+    {
+      "type": "windows-msg",
+      "enabled": false,
+      "target": "*",
+      "timeoutSeconds": 60
+    },
+    {
+      "type": "twilio-sms",
+      "enabled": false,
+      "accountSid": "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "authToken": "your-twilio-auth-token",
+      "from": "+10000000000",
+      "to": "+8617357717795"
+    },
+    {
+      "type": "webhook",
+      "enabled": false,
+      "url": "https://example.com/notify"
+    }
+  ]
+}

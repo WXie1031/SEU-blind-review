@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CatchScore Monitor</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="background-grid" aria-hidden="true"></div>
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">SEU Blind Review</p>
+        <h1>盲审结果监控台</h1>
+        <p class="hero-copy">
+          输入 SEU 账号密码后，系统会在每天 12:00 和 18:00 自动轮询，并把所有历史结果和仅
+          <code>PSCJ</code> 非空时生成的回调记录都保存在这里。
+        </p>
+      </section>
+
+      <section class="panel auth-panel" id="auth-panel">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Login</p>
+            <h2>登录 SEU</h2>
+          </div>
+          <div class="dot-cluster" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <div id="notice" class="notice hidden"></div>
+
+        <form id="login-form" class="form-grid">
+          <label>
+            <span>SEU 用户名</span>
+            <input name="username" type="text" autocomplete="username" required />
+          </label>
+          <label>
+            <span>SEU 密码</span>
+            <input name="password" type="password" autocomplete="current-password" required />
+          </label>
+          <button type="submit" class="button primary">登录并开始监控</button>
+        </form>
+
+        <form id="stage2-form" class="form-grid hidden">
+          <p class="inline-tip" id="stage2-tip">
+            系统已向你的 SEU 预留手机号发送验证码，请输入后继续。
+          </p>
+          <label>
+            <span>短信验证码</span>
+            <input
+              id="stage2-code"
+              name="stage2Code"
+              type="text"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              required
+            />
+          </label>
+          <button type="submit" class="button primary">提交验证码</button>
+          <button type="button" class="button secondary" id="cancel-stage2">重新登录</button>
+        </form>
+      </section>
+
+      <section class="panel dashboard hidden" id="dashboard">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Dashboard</p>
+            <h2 id="dashboard-title">监控状态</h2>
+          </div>
+          <div class="action-row">
+            <button type="button" class="button primary" id="poll-now">立即轮询</button>
+            <button type="button" class="button secondary" id="logout">退出登录</button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <p>当前状态</p>
+            <strong id="status-text">未登录</strong>
+          </article>
+          <article class="stat-card">
+            <p>最近结果</p>
+            <strong id="latest-results">-</strong>
+          </article>
+          <article class="stat-card">
+            <p>最近轮询时间</p>
+            <strong id="latest-polled-at">-</strong>
+          </article>
+          <article class="stat-card accent">
+            <p>回调记录数</p>
+            <strong id="callback-count">0</strong>
+          </article>
+        </div>
+
+        <div class="history-grid">
+          <section class="history-card">
+            <div class="history-head">
+              <div>
+                <p class="panel-kicker">History</p>
+                <h3>轮询历史</h3>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>时间</th>
+                    <th>来源</th>
+                    <th>状态</th>
+                    <th>结果</th>
+                    <th>说明</th>
+                  </tr>
+                </thead>
+                <tbody id="history-body">
+                  <tr>
+                    <td colspan="5" class="empty-cell">暂无历史记录</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="history-card">
+            <div class="history-head">
+              <div>
+                <p class="panel-kicker">Callback</p>
+                <h3>非空结果回调记录</h3>
+              </div>
+            </div>
+            <div id="callback-list" class="callback-list">
+              <div class="empty-state">还没有产生回调记录。</div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>

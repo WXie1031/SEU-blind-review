@@ -1,0 +1,19 @@
+{
+  "name": "catchscore",
+  "version": "1.0.0",
+  "description": "Timed blind-review polling and notification service for SEU eHall.",
+  "main": "src/main.js",
+  "scripts": {
+    "run": "node src/main.js run-once --config ./config.local.json",
+    "debug": "node src/main.js debug-fetch --config ./config.local.json",
+    "daemon": "node src/main.js daemon --config ./config.local.json",
+    "web": "node src/main.js web --config ./config.local.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
