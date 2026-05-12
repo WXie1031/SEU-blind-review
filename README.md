@@ -1,66 +1,66 @@
 # SEU-blind-review
 
-`catchScore` is a local web app for monitoring the SEU eHall blind review result endpoint.
+`catchScore` 是一个本地运行的 Web 应用，用来监控东南大学 eHall 盲审结果接口。
 
-It supports:
+当前支持：
 
-- logging in with an SEU username and password from the browser
-- handling SMS second-step verification when required
-- polling the blind review result endpoint every day at `12:00` and `18:00`
-- showing full polling history in the UI
-- recording a callback history only when `PSCJ` becomes non-null
+- 在浏览器中输入 SEU 用户名和密码登录
+- 如学校要求短信二次验证，可继续输入验证码完成登录
+- 每天 `12:00` 和 `18:00` 自动轮询盲审结果接口
+- 在页面中展示完整轮询历史
+- 仅当 `PSCJ` 变为非空时，生成一条“回调记录”
 
-## Features
+## 功能概览
 
-- SEU unified authentication login flow
-- support for stage-2 SMS verification
-- parsing `datas.lwssjgcx.rows[*].PSCJ`
-- persistent poll history
-- deduplicated callback records for repeated non-null results
-- CLI mode for one-off fetches and debugging
+- 打通 SEU 统一认证登录链路
+- 支持短信二次验证码补录
+- 解析 `datas.lwssjgcx.rows[*].PSCJ`
+- 持久化保存轮询历史
+- 对重复的非空结果做去重，避免重复生成回调记录
+- 保留 CLI 模式，便于单次查询和调试
 
-## Stack
+## 技术栈
 
 - Node.js
 - Express
-- plain frontend
-- local JSON persistence
+- 原生前端页面
+- 本地 JSON 持久化
 
-## Quick Start
+## 快速开始
 
-Install dependencies:
+安装依赖：
 
 ```powershell
 npm install
 ```
 
-Start the web app:
+启动 Web 应用：
 
 ```powershell
 npm run web
 ```
 
-Default address:
+默认访问地址：
 
 ```text
 http://127.0.0.1:3050
 ```
 
-## Web Flow
+## 页面使用流程
 
-1. Open the homepage and enter your SEU username and password.
-2. If SEU requires second-step verification, enter the SMS code in the page.
-3. After login succeeds, the app immediately performs one poll.
-4. The service then keeps polling every day at `12:00` and `18:00`.
-5. The dashboard shows:
-   - poll history: every success, empty result, and error record
-   - callback history: only records where `PSCJ` is non-null
+1. 打开首页，输入 SEU 用户名和密码。
+2. 如果学校要求二次验证，页面会提示输入短信验证码。
+3. 登录成功后，系统会立即执行一次轮询。
+4. 后续系统会在每天 `12:00` 和 `18:00` 自动轮询。
+5. 页面中会展示：
+   - 轮询历史：所有成功、空结果和失败记录
+   - 回调记录：只有 `PSCJ` 非空时才会出现
 
-## Configuration
+## 配置说明
 
-The default config file is `config.local.json`.
+默认配置文件为 `config.local.json`。
 
-### Web
+### Web 配置
 
 ```json
 {
@@ -77,7 +77,7 @@ The default config file is `config.local.json`.
 }
 ```
 
-### Polling
+### 轮询配置
 
 ```json
 {
@@ -92,11 +92,11 @@ The default config file is `config.local.json`.
 }
 ```
 
-### Auth
+### 认证配置
 
-In web mode, `auth.username` and `auth.password` can be left empty because the user logs in from the page.
+Web 模式下，`auth.username` 和 `auth.password` 可以留空，因为用户会在页面登录。
 
-In CLI mode, fill them in directly:
+CLI 模式下，如果想直接通过命令行轮询，需要填写：
 
 ```json
 {
@@ -108,41 +108,41 @@ In CLI mode, fill them in directly:
 }
 ```
 
-## Local Data
+## 本地数据文件
 
-Runtime data is stored under `data/`:
+运行时数据保存在 `data/` 下：
 
-- `data/web-state.json`: user monitor state, poll history, callback history
-- `data/web-secret.json`: local encryption key for saved passwords
-- `data/state.json`: CLI state
+- `data/web-state.json`：用户监控状态、轮询历史、回调历史
+- `data/web-secret.json`：本地加密密钥，用于加密保存登录密码
+- `data/state.json`：CLI 模式状态文件
 
-Ignored by git:
+以下内容已被 git 忽略：
 
 - `data/`
 - `config.local.json`
 - `node_modules/`
 
-## CLI
+## CLI 模式
 
-Run once:
+单次运行：
 
 ```powershell
 npm run run
 ```
 
-Debug fetch without notification:
+只调试接口，不发送通知：
 
 ```powershell
 npm run debug
 ```
 
-Run the daemon:
+启动常驻轮询：
 
 ```powershell
 npm run daemon
 ```
 
-## Project Layout
+## 项目结构
 
 ```text
 catchScore/
@@ -159,20 +159,20 @@ catchScore/
 └─ README.md
 ```
 
-## Verified
+## 已验证
 
-- SEU login can reach the blind review query endpoint
-- web login API works
-- `/api/history` returns saved history
-- `/api/poll-now` triggers an immediate poll
-- for the tested account, both `PSCJ` values were still `null` at the time of verification
+- SEU 登录后可以正常访问盲审查询接口
+- Web 登录 API 可正常工作
+- `/api/history` 可返回已保存的历史记录
+- `/api/poll-now` 可触发一次即时轮询
+- 对测试账号而言，验证时两条 `PSCJ` 都还是 `null`
 
-## Known Limits
+## 已知限制
 
-- this is a local deployment tool, not a hosted public service
-- the browser UI depends on the local service staying online
-- callback results are currently shown in the web UI only
-- if you do not want locally encrypted password storage, the app can be changed to memory-only mode
+- 这是一个本地部署工具，不是公网托管服务
+- 浏览器页面依赖本机服务持续运行
+- 当前“回调结果”仅展示在 Web 页面中，尚未接入短信、邮件或企业微信等外部渠道
+- 如果不希望本地保存加密后的登录密码，可以再改成仅内存保存模式
 
 ## License
 
